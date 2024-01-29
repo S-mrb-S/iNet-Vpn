@@ -1,13 +1,13 @@
 package com.hamrah.ang.ui.webview
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.hamrah.ang.R
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
+import com.hamrah.ang.R
 import com.hamrah.ang.extension.toast
 import com.hamrah.ang.ui.MainActivity
 import org.json.JSONObject
@@ -20,6 +20,8 @@ class WebViewLogin : AppCompatActivity() {
 
         val webView: WebView = findViewById(R.id.webViewLogin)
         val webSettings: WebSettings = webView.settings
+        webSettings.builtInZoomControls = false;
+        webSettings.setSupportZoom(false);
         webSettings.javaScriptEnabled = true
         webView.webChromeClient = WebChromeClient()
 
@@ -36,16 +38,12 @@ class WebViewLogin : AppCompatActivity() {
             finish()
         }
 
-        val baseUrl = "file:///android_asset/hamrah_vpn"
+        val baseUrl = "file:///android_asset/"
         val htmlPath = "loginScreen.html"
         val unencodedHtml = assets.open(htmlPath).bufferedReader().use { it.readText() }
 
         webView.loadDataWithBaseURL(baseUrl, unencodedHtml, "text/html", "UTF-8", null)
 
-//        val unencodedHtml =
-//            "<html><body>'%23' is the percent code for ‘#‘ </body></html>";
-//        val encodedHtml = Base64.encodeToString(unencodedHtml.toByteArray(), Base64.NO_PADDING)
-//        webView.loadData(encodedHtml, "text/html", "base64")
         webView.addJavascriptInterface(jsInterface, "AndroidInterface")
 
         // AndroidInterface.sendDataToKotlin("Hello from JavaScript!")

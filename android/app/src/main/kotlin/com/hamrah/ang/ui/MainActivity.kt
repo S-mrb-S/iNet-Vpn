@@ -1,6 +1,7 @@
 package com.hamrah.ang.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -13,6 +14,9 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -38,6 +42,7 @@ import com.hamrah.ang.helper.SimpleItemTouchHelperCallback
 import com.hamrah.ang.service.V2RayServiceManager
 import com.hamrah.ang.ui.fragments.FragmentHome
 import com.hamrah.ang.ui.fragments.FragmentTwo
+import com.hamrah.ang.ui.webview.HandleLogin
 import com.hamrah.ang.util.AngConfigManager
 import com.hamrah.ang.util.GetConfigsFromKotlin
 import com.hamrah.ang.util.GlobalExceptionHandler
@@ -51,6 +56,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.drakeet.support.toast.ToastCompat
+import org.json.JSONObject
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.io.File
@@ -71,6 +77,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 //    public var mItemTouchHelper: ItemTouchHelper? = null
     val mainViewModel: MainViewModel by viewModels()
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -78,6 +85,36 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setContentView(view)
         title = getString(R.string.title_server)
         setSupportActionBar(binding.toolbar)
+
+        //
+        val webView: WebView = findViewById(R.id.webViewHome)
+        val webSettings: WebSettings = webView.settings
+        webSettings.builtInZoomControls = false;
+        webSettings.setSupportZoom(false);
+        webSettings.javaScriptEnabled = true
+        webView.webChromeClient = WebChromeClient()
+
+//        val jsInterface = HandleLogin { data ->
+//            val jsonObject = JSONObject(data)
+//
+//            val name = jsonObject.getString("username")
+//            val pass = jsonObject.getString("password")
+//            toast("name: $name")
+//
+//            val intent = Intent(this, MainActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(intent)
+//            finish()
+//        }
+
+        val baseUrl = "file:///android_asset/"
+        val htmlPath = "HomeScreen.html"
+        val unencodedHtml = assets.open(htmlPath).bufferedReader().use { it.readText() }
+
+        webView.loadDataWithBaseURL(baseUrl, unencodedHtml, "text/html", "UTF-8", null)
+
+//        webView.addJavascriptInterface(jsInterface, "AndroidInterface")
+        //
 
         // handle error
         Thread.setDefaultUncaughtExceptionHandler(GlobalExceptionHandler())
