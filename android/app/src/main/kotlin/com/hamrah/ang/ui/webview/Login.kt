@@ -36,8 +36,8 @@ class WebViewLogin : AppCompatActivity() {
             finish()
         }
 
-        val baseUrl = "file:///android_asset/"
-        val htmlPath = "Login.html"
+        val baseUrl = "file:///android_asset/hamrah_vpn"
+        val htmlPath = "loginScreen.html"
         val unencodedHtml = assets.open(htmlPath).bufferedReader().use { it.readText() }
 
         webView.loadDataWithBaseURL(baseUrl, unencodedHtml, "text/html", "UTF-8", null)

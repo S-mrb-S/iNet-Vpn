@@ -211,7 +211,8 @@
         <receiver
             android:exported="true"
             android:name=".receiver.TaskerReceiver"
-                android:process=":RunSoLibV2RayDaemon">
+                android:process=":RunSoLibV2RayDaemon"
+            android:permission="TODO">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>

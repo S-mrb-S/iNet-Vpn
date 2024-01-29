@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="stylesheet" href="assets/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/style_002.css" />
+
+    <style>
+      body {
+        user-select: none;
+      }
+      input {
+        user-select: text;
+      }
+      input::placeholder {
+        text-align: center;
+        font-size: small;
+      }
+    </style>
+    <title>HamrahVpn</title>
+    <style>
+      body {
+        background-image: url("./assets/bg_login.png");
+        margin: 0;
+        padding: 0;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+      .header-text {
+        color: aliceblue;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: x-large;
+        font-weight: bold;
+      }
+
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+      }
+
+      .login-screen {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .login-box {
+        text-align: center;
+      }
+    </style>
+
+    <!-- sidenav  -->
+    <style>
+      /* The side navigation menu */
+      .sidenav {
+        height: 100%; /* 100% Full-height */
+        width: 0; /* 0 width - change this with JavaScript */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Stay on top */
+        top: 0;
+        right: 0; /* Left and right to side */
+        background-color: #111; /* Black*/
+        overflow-x: hidden; /* Disable horizontal scroll */
+        padding-top: 60px; /* Place content 60px from the top */
+        transition: 0.3s; /* 0.5 second transition effect to slide in the sidenav */
+      }
+
+      /* The navigation menu links */
+      .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+      }
+
+      /* When you mouse over the navigation links, change their color */
+      .sidenav a:hover {
+        color: #f1f1f1;
+      }
+
+      /* Position and style the close button (top right corner) */
+      .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+      }
+
+      /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+      /* #main {
+        transition: margin-left 0.5s;
+        padding: 20px;
+      } */
+
+      /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+      @media screen and (max-height: 450px) {
+        .sidenav {
+          padding-top: 15px;
+        }
+        .sidenav a {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
+        >&times;</a
+      >
+      <a href="#">About</a>
+      <a href="#">Services</a>
+      <a href="#">Clients</a>
+      <a href="#">Contact</a>
+    </div>
+
+    <div id="main">
+      <div style="position: absolute; right: 20px; top: 30px; color: #818181">
+        <!-- Use any element to open the sidenav -->
+        <a onclick="openNav()">
+          <svg viewBox="0 0 100 80" width="28" height="28">
+            <rect fill="steelblue" width="90" height="13" rx="10"></rect>
+            <rect fill="steelblue" y="30" width="90" height="13" rx="10"></rect>
+            <rect fill="steelblue" y="60" width="90" height="13" rx="10"></rect>
+          </svg>
+        </a>
+      </div>
+
+      <div class="login-screen login-box">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 contents">
+              <div class="row justify-content-center">
+                <div class="col-md-8">
+                  <a id="vpn-select">
+                    <img
+                      src="./assets/bg_disconnected.png"
+                      alt="img"
+                      style="height: 50%"
+                      id="vpn-image"
+                    />
+                  </a>
+
+                  <h5>Hello</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+      function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        // document.getElementById("main").style.marginLeft = "250px";
+        // document.body.style.backgroundColor
+        document.getElementById("main").style.backgroundColor =
+          "rgba(0,0,0,0.4)";
+      }
+
+      /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+      function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        // document.getElementById("main").style.marginLeft = "0";
+        document.getElementById("main").style.backgroundColor = "";
+      }
+
+      document
+        .getElementById("vpn-select")
+        .addEventListener("click", function () {
+          var vpnImage = document.getElementById("vpn-image");
+          // vpnImage.style.opacity = "0"; // تصویر را ناپدید کنید
+
+          setTimeout(function () {
+            vpnImage.src = "./assets/bg_connected.png"; // تصویر را تغییر دهید
+            vpnImage.hide('slide', {direction: 'left'}, 1000);
+        vpnImage.eq(thumbs.index(this)).show('slide', {direction: 'left'}, 1000);
+            // vpnImage.style.opacity = "1"; // تصویر را نمایان کنید
+          }, 500); // زمان تأخیر برای ایجاد انیمیشن (به میلی‌ثانیه)
+        });
+    </script>
+  </body>
+</html>
