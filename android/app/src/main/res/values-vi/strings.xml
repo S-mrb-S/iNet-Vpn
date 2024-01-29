@@ -2,23 +2,23 @@
 <resources>
     <string name="app_widget_name">Kết nối ngay</string>
     <string name="app_tile_name">Kết nối ngay</string>
-    <string name="app_tile_first_use">Vui lòng thêm một cấu hình vào xrayLite để sử dụng!</string>
+    <string name="app_tile_first_use">Vui lòng thêm một cấu hình vào Hamrah để sử dụng!</string>
     <string name="navigation_drawer_open">Mở Menu ứng dụng</string>
     <string name="navigation_drawer_close">Đóng Menu ứng dụng</string>
     <string name="migration_success">Đã chuyển dữ liệu!</string>
     <string name="migration_fail">Không thể chuyển dữ liệu!</string>
 
     <!-- Notifications -->
-    <string name="notification_action_stop_v2ray">Ngắt kết nối xrayLite</string>
-    <string name="toast_permission_denied">Vui lòng cấp quyền cần thiết cho xrayLite! Bạn đã từ chối các quyền cần thiết như Camera hay Bộ nhớ?</string>
+    <string name="notification_action_stop_v2ray">Ngắt kết nối Hamrah</string>
+    <string name="toast_permission_denied">Vui lòng cấp quyền cần thiết cho Hamrah! Bạn đã từ chối các quyền cần thiết như Camera hay Bộ nhớ?</string>
     <string name="notification_action_more">Nhấn để biết thêm</string>
-    <string name="toast_services_start">Đang khởi động xrayLite...</string>
-    <string name="toast_services_stop">Đã dừng xrayLite!</string>
-    <string name="toast_services_success">Đã khởi động xrayLite!</string>
-    <string name="toast_services_failure">Không thể khởi động xrayLite, kiểm tra lại cấu hình.</string>
+    <string name="toast_services_start">Đang khởi động Hamrah...</string>
+    <string name="toast_services_stop">Đã dừng Hamrah!</string>
+    <string name="toast_services_success">Đã khởi động Hamrah!</string>
+    <string name="toast_services_failure">Không thể khởi động Hamrah, kiểm tra lại cấu hình.</string>
 
     <!--ServerActivity-->
-    <string name="title_server">xrayLite</string>
+    <string name="title_server">Hamrah</string>
     <string name="menu_item_add_config">Thêm cấu hình</string>
     <string name="menu_item_save_config">Lưu cấu hình</string>
     <string name="menu_item_del_config">Xoá cấu hình</string>
@@ -119,7 +119,7 @@
     <string name="summary_pref_sniffing_enabled">Nhận diện tên miền từ gói tin để phục vụ định tuyến. \n(phải tắt để xài Zalo)</string>
 
     <string name="title_pref_local_dns_enabled">Bật Local DNS</string>
-    <string name="summary_pref_local_dns_enabled">DNS được xử lý bởi mô-đun DNS của xray-core (dùng nếu cần định tuyến bypass cho mạng LAN và địa chỉ nội địa)</string>
+    <string name="summary_pref_local_dns_enabled">DNS được xử lý bởi mô-đun DNS của hamrah-core (dùng nếu cần định tuyến bypass cho mạng LAN và địa chỉ nội địa)</string>
 
     <string name="title_pref_fake_dns_enabled">Bật FakeDNS</string>
     <string name="summary_pref_fake_dns_enabled">FakeDNS lấy tên miền mục tiêu bằng cách giả mạo DNS (nhanh hơn, nhưng có thể không hoạt động cho một số ứng dụng)</string>
@@ -202,7 +202,7 @@
     <string name="filter_config_all">Hiển thị tất cả các gói đăng ký</string>
     <string name="title_del_duplicate_config_count">Xoá %d cấu hình trùng lặp</string>
 
-    <string name="tasker_start_service">Khởi động xrayLite</string>
+    <string name="tasker_start_service">Khởi động Hamrah</string>
     <string name="tasker_setting_confirm">Xác nhận</string>
 
     <string name="routing_settings_title">Cài đặt định tuyến</string>

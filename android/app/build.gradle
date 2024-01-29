@@ -1,9 +1,16 @@
+// Inspired by V2rayNG
+// And me: github.com/MEHRAB832
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
 
+// work ang version
+// 2.8.1 <<<
 def work_version = "2.8.1"
+
+// shrink and proguard
 def proguardEnable = false
 def shrinkEnable = false
 
@@ -17,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.xray.lite"
+        applicationId "com.hamrah.ang"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
@@ -65,7 +72,8 @@ android {
     android.applicationVariants.all { variant ->
         // assign different version code for each output
         variant.outputs.each { output ->
-            output.outputFileName = "XrayLite_" + variant.versionName + "_" + output.getFilter(com.android.build.OutputFile.ABI) + ".apk"
+            // output build file
+            output.outputFileName = "Hamrah_" + variant.versionName + "_" + output.getFilter(com.android.build.OutputFile.ABI) + ".apk"
 
             output.versionCodeOverride =
                     project.ext.versionCodes.get(output.getFilter(com.android.build.OutputFile.ABI), 0) *
@@ -77,8 +85,8 @@ android {
         viewBinding true
         buildConfig true
     }
-    namespace 'com.xray.lite'
-    testNamespace 'com.xray.liteTest'
+    namespace 'com.hamrah.ang'
+    testNamespace 'com.hamrah.angTest'
 }
 
 dependencies {
@@ -98,8 +106,8 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.1.0-beta02'
 
     // WebView
-    implementation("androidx.webkit:webkit:1.9.0")
-    // Animation lottie
+    implementation("androidx.webkit:webkit:1.10.0")
+    // Animation lottie (SPLASH SCREEN)
     implementation("com.airbnb.android:lottie:6.3.0")
     // Androidx ktx
     implementation 'androidx.activity:activity-ktx:1.8.2'

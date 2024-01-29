@@ -128,7 +128,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="xraylite"/>
+                <data android:scheme="hamrah"/>
                 <data android:host="install-config"/>
                 <data android:host="install-sub"/>
             </intent-filter>
@@ -177,8 +177,8 @@
                     android:resource="@xml/app_widget_provider" />
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.xray.lite.action.widget.click" />
-                <action android:name="com.xray.lite.action.activity" />
+                <action android:name="com.hamrah.ang.action.widget.click" />
+                <action android:name="com.hamrah.ang.action.activity" />
             </intent-filter>
         </receiver>
 

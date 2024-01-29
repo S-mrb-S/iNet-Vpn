@@ -10,8 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        jcenter()  // Don't delete
     }
 }
-rootProject.name = "XrayLite"
+rootProject.name = "Hamrah"
 include ':app'
