@@ -63,18 +63,17 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val adapterMain by lazy { MainRecyclerAdapter(this) }
+//    private val adapterMain by lazy { MainRecyclerAdapter(this) }
     private val mainStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_MAIN, MMKV.MULTI_PROCESS_MODE) }
-    private val settingsStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_SETTING, MMKV.MULTI_PROCESS_MODE) }
-    private val requestVpnPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            startV2Ray()
-        }
-    }
-//    public var mItemTouchHelper: ItemTouchHelper? = null
+//    private val settingsStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_SETTING, MMKV.MULTI_PROCESS_MODE) }
+//    private val requestVpnPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+//        if (it.resultCode == RESULT_OK) {
+//            startV2Ray()
+//        }
+//    }
     val mainViewModel: MainViewModel by viewModels()
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -83,8 +82,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        title = getString(R.string.title_server)
-        setSupportActionBar(binding.toolbar)
+//        title = getString(R.string.title_server)
+//        setSupportActionBar(binding.toolbar)
 
         //
         val webView: WebView = findViewById(R.id.webViewHome)
@@ -94,18 +93,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         webSettings.javaScriptEnabled = true
         webView.webChromeClient = WebChromeClient()
 
-//        val jsInterface = HandleLogin { data ->
-//            val jsonObject = JSONObject(data)
-//
-//            val name = jsonObject.getString("username")
-//            val pass = jsonObject.getString("password")
-//            toast("name: $name")
-//
-//            val intent = Intent(this, MainActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            startActivity(intent)
-//            finish()
-//        }
+        val jsInterface = HandleLogin { data ->
+            val jsonObject = JSONObject(data)
+
+            val name = jsonObject.getString("username")
+            val pass = jsonObject.getString("password")
+            toast("name: $name")
+
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
 
         val baseUrl = "file:///android_asset/"
         val htmlPath = "HomeScreen.html"
@@ -113,75 +112,53 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         webView.loadDataWithBaseURL(baseUrl, unencodedHtml, "text/html", "UTF-8", null)
 
-//        webView.addJavascriptInterface(jsInterface, "AndroidInterface")
-        //
+        // ارسال مقدار به جاوااسکریپت
+        val myValue = "Hello from Kotlin!"
+        webView.evaluateJavascript("testKotlinToJs('$myValue')", null)
 
-        // handle error
-        Thread.setDefaultUncaughtExceptionHandler(GlobalExceptionHandler())
+        webView.addJavascriptInterface(jsInterface, "Android")
 
         // save default config
-        initializeApp()
+//        initializeApp()
 
-        //
-        val viewPager: ViewPager2 = findViewById(R.id.viewPager)
-
-        val fragments = ArrayList<Fragment>()
-        fragments.add(FragmentHome())
-        fragments.add(FragmentTwo())
-
-        val adapter = FragmentAdapter(this, fragments)
-        viewPager.adapter = adapter
-
-        val tabFragment = adapter.createFragment(0) as FragmentHome
-        tabFragment.setAdapter(adapterMain)
-
-        //
-        binding.fab.setOnClickListener {
-            if (mainViewModel.isRunning.value == true) {
-                Utils.stopVService(this)
-            } else if ((settingsStorage?.decodeString(AppConfig.PREF_MODE) ?: "VPN") == "VPN") {
-                val intent = VpnService.prepare(this)
-                if (intent == null) {
-                    startV2Ray()
-                } else {
-                    requestVpnPermission.launch(intent)
-                }
-            } else {
-                startV2Ray()
-            }
-        }
-        binding.buttonGet.setOnClickListener {
-            getConfig()
-            toast("FUCK")
-        }
-        binding.layoutTest.setOnClickListener {
-            if (mainViewModel.isRunning.value == true) {
-                setTestState(getString(R.string.connection_test_testing))
-                mainViewModel.testCurrentServerRealPing()
-            } else {
-//                tv_test_state.text = getString(R.string.connection_test_fail)
-            }
-        }
-
-//        binding.recyclerView.setHasFixedSize(true)
-//        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-//        binding.recyclerView.adapter = adapter
-
-//        val callback = SimpleItemTouchHelperCallback(adapterMain)
-//        mItemTouchHelper = ItemTouchHelper(callback)
-//        mItemTouchHelper?.attachToRecyclerView(binding.recyclerView)
+//        binding.fab.setOnClickListener {
+//            if (mainViewModel.isRunning.value == true) {
+//                Utils.stopVService(this)
+//            } else if ((settingsStorage?.decodeString(AppConfig.PREF_MODE) ?: "VPN") == "VPN") {
+//                val intent = VpnService.prepare(this)
+//                if (intent == null) {
+//                    startV2Ray()
+//                } else {
+//                    requestVpnPermission.launch(intent)
+//                }
+//            } else {
+//                startV2Ray()
+//            }
+//        }
+//        binding.buttonGet.setOnClickListener {
+//            getConfig()
+//            toast("FUCK")
+//        }
+//        binding.layoutTest.setOnClickListener {
+//            if (mainViewModel.isRunning.value == true) {
+//                setTestState(getString(R.string.connection_test_testing))
+//                mainViewModel.testCurrentServerRealPing()
+//            } else {
+//            }
+//        }
 
 
-        val toggle = ActionBarDrawerToggle(
-                this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        binding.navView.setNavigationItemSelectedListener(this)
-        "v${BuildConfig.VERSION_NAME} (${SpeedtestUtil.getLibVersion()})".also { binding.version.text = it }
 
-        setupViewModel()
-        copyAssets()
-        migrateLegacy()
+//        val toggle = ActionBarDrawerToggle(
+//                this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+//        binding.drawerLayout.addDrawerListener(toggle)
+//        toggle.syncState()
+//        binding.navView.setNavigationItemSelectedListener(this)
+//        "v${BuildConfig.VERSION_NAME} (${SpeedtestUtil.getLibVersion()})".also { binding.version.text = it }
+
+//        setupViewModel()
+//        copyAssets()
+//        migrateLegacy()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             RxPermissions(this)
@@ -193,36 +170,36 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private fun setupViewModel() {
-        mainViewModel.updateListAction.observe(this) { index ->
-            if (index >= 0) {
-                adapterMain.notifyItemChanged(index)
-            } else {
-                adapterMain.notifyDataSetChanged()
-            }
-        }
-        mainViewModel.updateTestResultAction.observe(this) { setTestState(it) }
-        mainViewModel.isRunning.observe(this) { isRunning ->
-            adapterMain.isRunning = isRunning
-            if (isRunning) {
-                if (!Utils.getDarkModeStatus(this)) {
-                    binding.fab.setImageResource(R.drawable.ic_stat_name)
-                }
-                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_orange))
-                setTestState(getString(R.string.connection_connected))
-                binding.layoutTest.isFocusable = true
-            } else {
-                if (!Utils.getDarkModeStatus(this)) {
-                    binding.fab.setImageResource(R.drawable.ic_stat_name)
-                }
-                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_grey))
-                setTestState(getString(R.string.connection_not_connected))
-                binding.layoutTest.isFocusable = false
-            }
-            hideCircle()
-        }
-        mainViewModel.startListenBroadcast()
-    }
+//    private fun setupViewModel() {
+//        mainViewModel.updateListAction.observe(this) { index ->
+//            if (index >= 0) {
+//                adapterMain.notifyItemChanged(index)
+//            } else {
+//                adapterMain.notifyDataSetChanged()
+//            }
+//        }
+//        mainViewModel.updateTestResultAction.observe(this) { setTestState(it) }
+//        mainViewModel.isRunning.observe(this) { isRunning ->
+//            adapterMain.isRunning = isRunning
+//            if (isRunning) {
+//                if (!Utils.getDarkModeStatus(this)) {
+//                    binding.fab.setImageResource(R.drawable.ic_stat_name)
+//                }
+//                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_orange))
+//                setTestState(getString(R.string.connection_connected))
+//                binding.layoutTest.isFocusable = true
+//            } else {
+//                if (!Utils.getDarkModeStatus(this)) {
+//                    binding.fab.setImageResource(R.drawable.ic_stat_name)
+//                }
+//                binding.fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.color_fab_grey))
+//                setTestState(getString(R.string.connection_not_connected))
+//                binding.layoutTest.isFocusable = false
+//            }
+//            hideCircle()
+//        }
+//        mainViewModel.startListenBroadcast()
+//    }
 
     private fun copyAssets() {
         val extFolder = Utils.userAssetPath(this)
@@ -738,7 +715,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun setTestState(content: String?) {
-        binding.tvTestState.text = content
+//        binding.tvTestState.text = content
     }
 
 //    val mConnection = object : ServiceConnection {
@@ -760,65 +737,65 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 
     fun showCircle() {
-        binding.fabProgressCircle.show()
+//        binding.fabProgressCircle.show()
     }
 
     fun hideCircle() {
-        try {
-            Observable.timer(300, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        try {
-                            if (binding.fabProgressCircle.isShown) {
-                                binding.fabProgressCircle.hide()
-                            }
-                        } catch (e: Exception) {
-                            Log.w(ANG_PACKAGE, e)
-                        }
-                    }
-        } catch (e: Exception) {
-            Log.d(ANG_PACKAGE, e.toString())
-        }
+//        try {
+//            Observable.timer(300, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe {
+//                        try {
+//                            if (binding.fabProgressCircle.isShown) {
+//                                binding.fabProgressCircle.hide()
+//                            }
+//                        } catch (e: Exception) {
+//                            Log.w(ANG_PACKAGE, e)
+//                        }
+//                    }
+//        } catch (e: Exception) {
+//            Log.d(ANG_PACKAGE, e.toString())
+//        }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            //super.onBackPressed()
-            onBackPressedDispatcher.onBackPressed()
-        }
-    }
+//    @Deprecated("Deprecated in Java")
+//    override fun onBackPressed() {
+//        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+//            binding.drawerLayout.closeDrawer(GravityCompat.START)
+//        } else {
+//            //super.onBackPressed()
+//            onBackPressedDispatcher.onBackPressed()
+//        }
+//    }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            //R.id.server_profile -> activityClass = MainActivity::class.java
-            R.id.sub_setting -> {
-                startActivity(Intent(this, SubSettingActivity::class.java))
-            }
-            R.id.settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java)
-                        .putExtra("isRunning", mainViewModel.isRunning.value == true))
-            }
-            R.id.user_asset_setting -> {
-                startActivity(Intent(this, UserAssetActivity::class.java))
-            }
-            R.id.feedback -> {
-                Utils.openUri(this, AppConfig.v2rayNGIssues)
-            }
-            R.id.promotion -> {
-                Utils.openUri(this, "${Utils.decode(AppConfig.promotionUrl)}?t=${System.currentTimeMillis()}")
-            }
-            R.id.logcat -> {
-                startActivity(Intent(this, LogcatActivity::class.java))
-            }
-            R.id.privacy_policy-> {
-                Utils.openUri(this, AppConfig.v2rayNGPrivacyPolicy)
-            }
-        }
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        // Handle navigation view item clicks here.
+//        when (item.itemId) {
+//            //R.id.server_profile -> activityClass = MainActivity::class.java
+//            R.id.sub_setting -> {
+//                startActivity(Intent(this, SubSettingActivity::class.java))
+//            }
+//            R.id.settings -> {
+//                startActivity(Intent(this, SettingsActivity::class.java)
+//                        .putExtra("isRunning", mainViewModel.isRunning.value == true))
+//            }
+//            R.id.user_asset_setting -> {
+//                startActivity(Intent(this, UserAssetActivity::class.java))
+//            }
+//            R.id.feedback -> {
+//                Utils.openUri(this, AppConfig.v2rayNGIssues)
+//            }
+//            R.id.promotion -> {
+//                Utils.openUri(this, "${Utils.decode(AppConfig.promotionUrl)}?t=${System.currentTimeMillis()}")
+//            }
+//            R.id.logcat -> {
+//                startActivity(Intent(this, LogcatActivity::class.java))
+//            }
+//            R.id.privacy_policy-> {
+//                Utils.openUri(this, AppConfig.v2rayNGPrivacyPolicy)
+//            }
+//        }
+//        binding.drawerLayout.closeDrawer(GravityCompat.START)
+//        return true
+//    }
 }

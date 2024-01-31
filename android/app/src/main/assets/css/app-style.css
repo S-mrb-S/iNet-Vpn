@@ -1,0 +1,228 @@
+body {
+  background-image: url("/background.jpg");
+  /* Add the blur effect */
+  /* filter: blur(8px); */
+  /* -webkit-filter: blur(8px); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0;
+  user-select: none;
+}
+input {
+  user-select: text;
+}
+input::placeholder {
+  text-align: center;
+  font-size: small;
+}
+.header-text {
+  margin: 0;
+  padding: 0;
+  color: #00000045;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+}
+body,
+html {
+  height: 100%;
+  margin: 0;
+}
+/* main */
+.screen {
+}
+#main {
+  text-align: center;
+}
+
+/* Side nav */
+
+/* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0;
+  right: 0; /* Left and right to side */
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.3s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+/* #main {
+    transition: margin-left 0.5s;
+    padding: 20px;
+  } */
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+/* The modal */
+/* modal  */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  justify-content: center; /* تنظیم مرکزبندی افقی */
+  align-items: center; /* تنظیم مرکزبندی عمودی */
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 20% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  height: fit-content;
+  width: fit-content;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Select main box */
+/* ///  END DECORATION CSS  ///  */
+.icon_select_mate_left {
+  /* position: absolute; */
+  top: 11px;
+  right: 5%;
+  font-size: 12px;
+  height: 22px;
+  transform: rotate(270deg);
+}
+.icon_select_mate_location {
+  /* position: absolute; */
+  top: 11px;
+  right: 15%;
+  font-size: 12px;
+  height: 22px;
+}
+
+.select_mate_small {
+  width: fit-content;
+  max-height: fit-content;
+  color: #777;
+  background-color: #313061;
+  box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  /* Oculto el elemento select */
+}
+/* etiqueta <p> con la opcion selecionada  */
+.selecionado_opcion_small {
+  /* position: absolute; */
+  /* padding: 14px 2%; */
+  display: block;
+  margin: 0px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap; /* جلوگیری از شکسته شدن خط */
+  overflow: hidden; /* جلوگیری از نمایش متن بیشتر */
+  text-overflow: ellipsis; /* نمایش نقطه به جای متن بیشتر */
+}
+.container-select-small {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 8px;
+  padding-left: 18px;
+  display: flex;
+  align-items: center;
+}
+.back-config-type {
+  background-color: #313061;
+  border-radius: 10px;
+  padding: 6px;
+}
+.space-sections {
+  margin-right: 10px;
+}
+
+/* Button */
+#vpn-section {
+  /*background-color: white; تغییر رنگ دکمه */
+  height: fit-content;
+  width: fit-content;
+  /* border-radius: 100%; */
+  /* padding: 17px; */
+}
+#vpn-section a {
+  display: block;
+}
+#vpn-section div {
+  border-radius: 100%;
+  padding: 20px;
+  transition: 0.5s;
+}
+#vpn-section div div {
+  border-radius: 100%;
+  padding: 19px;
+  transition: 0.5s;
+}
+path {
+  transition: 0.5s;
+}

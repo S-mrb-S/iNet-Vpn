@@ -22,4 +22,21 @@ class HandleLogin(private val callback: (String) -> Unit) {
             e.printStackTrace()
         }
     }
+
+    @Keep
+    fun sendCheckboxValueToKotlin(data: String) {
+        // Js to Kotlin
+        try {
+            val jsonObject = JSONObject(data)
+            val name = jsonObject.optString("username", "")
+            val pass = jsonObject.optString("password", "")
+
+            if (name.isNotEmpty() && pass.isNotEmpty()) {
+                callback.invoke(data)
+            }
+
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
 }
