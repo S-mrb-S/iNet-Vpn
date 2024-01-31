@@ -16,100 +16,6 @@
     <!-- main css -->
     <link rel="stylesheet" href="css/app-style.css" />
     <script src="./javascript/StartScriptSrc.js"></script>
-
-    <!-- kotlin and js (start button vpn) -->
-    <script type="text/javascript">
-      // developed by MehrabSp
-
-      // this function add default value to start button from kotlin (mmkv)
-      // this function call from kotlin
-      function receiveCheckboxValueFromKotlin(value) {
-        // اجرای عملیات مورد نظر با مقدار دریافتی از Kotlin
-        try {
-          if (value === true) {
-            document.getElementById("exampleRadios1").checked = true;
-            document.getElementById("exampleRadios2").checked = false;
-          } else if (value === false) {
-            document.getElementById("exampleRadios1").checked = false;
-            document.getElementById("exampleRadios2").checked = true;
-          } else {
-            alert("wrong number");
-          }
-        } catch (error) {
-          alert("error when set value from js");
-          showAndroidToast("[receiveCheckboxValueFromKotlin] error!");
-        }
-
-        showAndroidToast("value add");
-      }
-    </script>
-
-    <!-- kotlin and js (radio and checkbox) -->
-    <script type="text/javascript">
-      // developed by MehrabSp
-      // let selectedOption;
-
-      document.addEventListener("DOMContentLoaded", function () {
-        try {
-          document
-            .querySelectorAll('input[name="defConfigRadios"]')
-            .forEach((radio) => {
-              radio.addEventListener("change", function () {
-                if (this.checked) {
-                  sendCheckboxValueToKotlin(this.value);
-                }
-              });
-            });
-        } catch (error) {
-          alert("error! msg: " + error);
-        }
-      });
-
-      // send new value to kotlin
-      function sendCheckboxValueToKotlin(value) {
-        try {
-          // send value
-        } catch (error) {
-          alert("error when sending value to kotlin! msg: " + error);
-        }
-      }
-
-      // this function add default value to checkboxes from kotlin (mmkv)
-      // this function call from kotlin
-      function receiveCheckboxValueFromKotlin(value) {
-        // اجرای عملیات مورد نظر با مقدار دریافتی از Kotlin
-        try {
-          if (value === 1) {
-            document.getElementById("exampleRadios1").checked = true;
-            document.getElementById("exampleRadios2").checked = false;
-          } else if (value === 2) {
-            document.getElementById("exampleRadios1").checked = false;
-            document.getElementById("exampleRadios2").checked = true;
-          } else {
-            alert("wrong number");
-          }
-        } catch (error) {
-          alert("error when set value from js");
-          showAndroidToast("[receiveCheckboxValueFromKotlin] error!");
-        }
-
-        showAndroidToast("value add");
-      }
-    </script>
-
-    <!-- Public js -->
-    <script type="text/javascript">
-      // send log to android
-      function showAndroidToast(toast) {
-        // Android.showToast(toast);
-      }
-    </script>
-
-    <script>
-      function testKotlinToJs(value) {
-        alert(value);
-      }
-    </script>
   </head>
   <body>
     <div
@@ -128,23 +34,32 @@
         <!-- user left  -->
         <div style="position: absolute; left: 20px; top: 20px">
           <a onclick="openNav()">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-users"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
+            <defs id="SvgjsDefs1002"></defs
+            ><g id="SvgjsG1008"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                width="40"
+                height="40"
+              >
+                <g
+                  fill="#1c1c1c"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  class="color1C1C1C svgShape"
+                >
+                  <path
+                    d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 31C7.716 31 1 24.284 1 16 1 7.716 7.716 1 16 1s15 6.716 15 15c0 8.284-6.716 15-15 15z"
+                    fill="#fff"
+                    class="color000 svgShape"
+                  ></path>
+                  <path
+                    d="M19.37 15.672A4.968 4.968 0 0 0 21 12a5 5 0 0 0-10 0c0 1.458.634 2.758 1.63 3.672C9.332 17.006 7 20.224 7 24h18c0-3.776-2.332-6.994-5.63-8.328zM12 12a4 4 0 1 1 6.26 3.298c-.05.034-.106.06-.158.092-.145.09-.295.174-.452.245-.077.035-.158.065-.238.095-.15.057-.304.105-.462.143-.075.018-.149.039-.226.053-.235.044-.476.074-.724.074s-.489-.03-.725-.073c-.077-.014-.151-.035-.226-.053a4.194 4.194 0 0 1-.462-.143c-.08-.03-.16-.06-.238-.095a3.934 3.934 0 0 1-.452-.245c-.052-.032-.108-.058-.158-.092A3.998 3.998 0 0 1 12 12zM8.069 23a8.003 8.003 0 0 1 5.546-6.631c.712.389 1.516.631 2.385.631s1.673-.242 2.385-.631A8.004 8.004 0 0 1 23.931 23H8.069z"
+                    fill="#fff"
+                    class="color000 svgShape"
+                  ></path>
+                </g></svg
+            ></g>
           </a>
         </div>
 
@@ -170,6 +85,7 @@
                 <!-- Start button -->
                 <section id="vpn-section">
                   <div id="vpn-two-layer">
+                    <!--addEventListener-->
                     <a id="vpn-select">
                       <div id="vpn-one-layer">
                         <svg

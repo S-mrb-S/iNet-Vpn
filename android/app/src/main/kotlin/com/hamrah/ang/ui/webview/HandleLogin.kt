@@ -1,10 +1,15 @@
 package com.hamrah.ang.ui.webview
 
+import android.net.VpnService
 import android.webkit.JavascriptInterface
 import androidx.annotation.Keep
+import com.hamrah.ang.AppConfig
+import com.hamrah.ang.ui.MainActivity
+import com.hamrah.ang.util.Utils
 import org.json.JSONObject
 
 class HandleLogin(private val callback: (String) -> Unit) {
+
     @JavascriptInterface
     @Keep
     fun sendDataToKotlin(data: String) {
@@ -22,6 +27,16 @@ class HandleLogin(private val callback: (String) -> Unit) {
             e.printStackTrace()
         }
     }
+    @JavascriptInterface
+    @Keep
+    fun sendEventToKotlin() {
+        // Js to Kotlin
+        try {
+            callback.invoke("event")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     @Keep
     fun sendCheckboxValueToKotlin(data: String) {
@@ -35,7 +50,7 @@ class HandleLogin(private val callback: (String) -> Unit) {
                 callback.invoke(data)
             }
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

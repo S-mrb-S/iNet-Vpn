@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.net.VpnService
 import android.os.Build
@@ -17,46 +16,33 @@ import android.view.MenuItem
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.navigation.NavigationView
-import com.tbruyelle.rxpermissions.RxPermissions
-import com.tencent.mmkv.MMKV
 import com.hamrah.ang.AppConfig
 import com.hamrah.ang.AppConfig.ANG_PACKAGE
-import com.hamrah.ang.BuildConfig
 import com.hamrah.ang.R
 import com.hamrah.ang.databinding.ActivityMainBinding
 import com.hamrah.ang.dto.EConfigType
 import com.hamrah.ang.extension.toast
-import com.hamrah.ang.helper.SimpleItemTouchHelperCallback
 import com.hamrah.ang.service.V2RayServiceManager
-import com.hamrah.ang.ui.fragments.FragmentHome
-import com.hamrah.ang.ui.fragments.FragmentTwo
 import com.hamrah.ang.ui.webview.HandleLogin
 import com.hamrah.ang.util.AngConfigManager
 import com.hamrah.ang.util.GetConfigsFromKotlin
-import com.hamrah.ang.util.GlobalExceptionHandler
 import com.hamrah.ang.util.MmkvManager
-import com.hamrah.ang.util.SpeedtestUtil
 import com.hamrah.ang.util.Utils
 import com.hamrah.ang.viewmodel.MainViewModel
+import com.tbruyelle.rxpermissions.RxPermissions
+import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.drakeet.support.toast.ToastCompat
-import org.json.JSONObject
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.io.File
@@ -66,14 +52,20 @@ import java.util.concurrent.TimeUnit
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
 
-//    private val adapterMain by lazy { MainRecyclerAdapter(this) }
-    private val mainStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_MAIN, MMKV.MULTI_PROCESS_MODE) }
-//    private val settingsStorage by lazy { MMKV.mmkvWithID(MmkvManager.ID_SETTING, MMKV.MULTI_PROCESS_MODE) }
-//    private val requestVpnPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-//        if (it.resultCode == RESULT_OK) {
-//            startV2Ray()
-//        }
-//    }
+    //    private val adapterMain by lazy { MainRecyclerAdapter(this) }
+    val mainStorage: MMKV by lazy { MMKV.mmkvWithID(MmkvManager.ID_MAIN, MMKV.MULTI_PROCESS_MODE) }
+    val settingsStorage: MMKV by lazy {
+        MMKV.mmkvWithID(
+            MmkvManager.ID_SETTING,
+            MMKV.MULTI_PROCESS_MODE
+        )
+    }
+    val requestVpnPermission =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                startV2Ray()
+            }
+        }
     val mainViewModel: MainViewModel by viewModels()
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -85,36 +77,50 @@ class MainActivity : BaseActivity() {
 //        title = getString(R.string.title_server)
 //        setSupportActionBar(binding.toolbar)
 
-        //
-        val webView: WebView = findViewById(R.id.webViewHome)
+        // web view in OnCreate!
+        val webView: WebView = binding.webViewHome
+
         val webSettings: WebSettings = webView.settings
+
         webSettings.builtInZoomControls = false;
         webSettings.setSupportZoom(false);
         webSettings.javaScriptEnabled = true
         webView.webChromeClient = WebChromeClient()
 
         val jsInterface = HandleLogin { data ->
-            val jsonObject = JSONObject(data)
-
-            val name = jsonObject.getString("username")
-            val pass = jsonObject.getString("password")
-            toast("name: $name")
-
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
+            if (data === "event") {
+                runOnUiThread {
+                    si()
+                }
+            }
         }
 
-        val baseUrl = "file:///android_asset/"
-        val htmlPath = "HomeScreen.html"
-        val unencodedHtml = assets.open(htmlPath).bufferedReader().use { it.readText() }
+        try {
+            val baseUrl = "file:///android_asset/"
+            val htmlPath = "HomeScreen.html"
+            val unencodedHtml = assets.open(htmlPath).bufferedReader().use { it.readText() }
 
-        webView.loadDataWithBaseURL(baseUrl, unencodedHtml, "text/html", "UTF-8", null)
+            webView.loadDataWithBaseURL(baseUrl, unencodedHtml, "text/html", "UTF-8", null)
+
+        } catch (e: Error) {
+            Log.d("ERROR BASE", e.toString())
+        }
 
         // ارسال مقدار به جاوااسکریپت
-        val myValue = "Hello from Kotlin!"
-        webView.evaluateJavascript("testKotlinToJs('$myValue')", null)
+//        val myValue = "Hello from Kotlin!"
+//        webView.evaluateJavascript("const salam = '$myValue'", null)
+//        fun send(returnValue: String){
+//            Toast.makeText(this, returnValue, Toast.LENGTH_SHORT).show()
+//        }
+//        webView.evaluateJavascript("(function() { changheBool() })();") { returnValue ->
+//            send(returnValue)
+//        }
+
+//        webView.webViewClient = object : WebViewClient() {
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                webView.evaluateJavascript("changheBool(true)", null)
+//            }
+//        }
 
         webView.addJavascriptInterface(jsInterface, "Android")
 
@@ -148,7 +154,6 @@ class MainActivity : BaseActivity() {
 //        }
 
 
-
 //        val toggle = ActionBarDrawerToggle(
 //                this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 //        binding.drawerLayout.addDrawerListener(toggle)
@@ -167,6 +172,22 @@ class MainActivity : BaseActivity() {
                     if (!it)
                         toast(R.string.toast_permission_denied)
                 }
+        }
+    }
+
+    private fun si(){
+        toast("Farakhoon")
+        if (mainViewModel.isRunning.value == true) {
+            Utils.stopVService(this)
+        } else if ((settingsStorage?.decodeString(AppConfig.PREF_MODE) ?: "VPN") == "VPN") {
+            val intent = VpnService.prepare(this)
+            if (intent == null) {
+                startV2Ray()
+            } else {
+                requestVpnPermission.launch(intent)
+            }
+        } else {
+            startV2Ray()
         }
     }
 
@@ -207,19 +228,33 @@ class MainActivity : BaseActivity() {
             try {
                 val geo = arrayOf("geosite.dat", "geoip.dat")
                 assets.list("")
-                        ?.filter { geo.contains(it) }
-                        ?.filter { !File(extFolder, it).exists() }
-                        ?.forEach {
-                            val target = File(extFolder, it)
-                            assets.open(it).use { input ->
-                                FileOutputStream(target).use { output ->
-                                    input.copyTo(output)
-                                }
+                    ?.filter { geo.contains(it) }
+                    ?.filter { !File(extFolder, it).exists() }
+                    ?.forEach {
+                        val target = File(extFolder, it)
+                        assets.open(it).use { input ->
+                            FileOutputStream(target).use { output ->
+                                input.copyTo(output)
                             }
-                            Log.i(ANG_PACKAGE, "Copied from apk assets folder to ${target.absolutePath}")
                         }
+                        Log.i(
+                            ANG_PACKAGE,
+                            "Copied from apk assets folder to ${target.absolutePath}"
+                        )
+                    }
             } catch (e: Exception) {
                 Log.e(ANG_PACKAGE, "asset copy failed", e)
+            }
+        }
+    }
+
+    fun sendVpnState(state: Boolean) {
+        val webView: WebView = binding.webViewHome
+
+//        val webSettings: WebSettings = webView.settings
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                webView.evaluateJavascript("changheBool(${state})", null)
             }
         }
     }
@@ -276,6 +311,8 @@ class MainActivity : BaseActivity() {
 
     fun startV2Ray() {
         if (mainStorage?.decodeString(MmkvManager.KEY_SELECTED_SERVER).isNullOrEmpty()) {
+            toast("EMPTY");
+
             return
         }
         showCircle()
@@ -289,10 +326,10 @@ class MainActivity : BaseActivity() {
             Utils.stopVService(this)
         }
         Observable.timer(500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    startV2Ray()
-                }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                startV2Ray()
+            }
     }
 
     public override fun onResume() {
@@ -314,46 +351,57 @@ class MainActivity : BaseActivity() {
             importQRcode(true)
             true
         }
+
         R.id.import_clipboard -> {
             importClipboard()
             true
         }
+
         R.id.import_manually_vmess -> {
             importManually(EConfigType.VMESS.value)
             true
         }
+
         R.id.import_manually_vless -> {
             importManually(EConfigType.VLESS.value)
             true
         }
+
         R.id.import_manually_ss -> {
             importManually(EConfigType.SHADOWSOCKS.value)
             true
         }
+
         R.id.import_manually_socks -> {
             importManually(EConfigType.SOCKS.value)
             true
         }
+
         R.id.import_manually_trojan -> {
             importManually(EConfigType.TROJAN.value)
             true
         }
+
         R.id.import_manually_wireguard -> {
             importManually(EConfigType.WIREGUARD.value)
             true
         }
+
         R.id.import_config_custom_clipboard -> {
             importConfigCustomClipboard()
             true
         }
+
         R.id.import_config_custom_local -> {
             importConfigCustomLocal()
             true
         }
+
         R.id.import_config_custom_url -> {
             importConfigCustomUrlClipboard()
             true
         }
+
         R.id.import_config_custom_url_scan -> {
             importQRcode(false)
             true
@@ -370,7 +418,11 @@ class MainActivity : BaseActivity() {
         }
 
         R.id.export_all -> {
-            if (AngConfigManager.shareNonCustomConfigsToClipboard(this, mainViewModel.serverList) == 0) {
+            if (AngConfigManager.shareNonCustomConfigsToClipboard(
+                    this,
+                    mainViewModel.serverList
+                ) == 0
+            ) {
                 toast(R.string.toast_success)
             } else {
                 toast(R.string.toast_failure)
@@ -395,14 +447,15 @@ class MainActivity : BaseActivity() {
 
         R.id.del_all_config -> {
             AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
-                        MmkvManager.removeAllServer()
-                        mainViewModel.reloadServerList()
-                    }
-                    .show()
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    MmkvManager.removeAllServer()
+                    mainViewModel.reloadServerList()
+                }
+                .show()
             true
         }
-        R.id.del_duplicate_config-> {
+
+        R.id.del_duplicate_config -> {
             AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     mainViewModel.removeDuplicateServer()
@@ -410,6 +463,7 @@ class MainActivity : BaseActivity() {
                 .show()
             true
         }
+
         R.id.del_invalid_config -> {
             AlertDialog.Builder(this).setMessage(R.string.del_config_comfirm)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -419,11 +473,13 @@ class MainActivity : BaseActivity() {
                 .show()
             true
         }
+
         R.id.sort_by_test_results -> {
             MmkvManager.sortByTestResults()
             mainViewModel.reloadServerList()
             true
         }
+
         R.id.filter_config -> {
             mainViewModel.filterConfig(this)
             true
@@ -432,7 +488,7 @@ class MainActivity : BaseActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun importManually(createConfigType : Int) {
+    private fun importManually(createConfigType: Int) {
         startActivity(
             Intent()
                 .putExtra("createConfigType", createConfigType)
@@ -450,7 +506,7 @@ class MainActivity : BaseActivity() {
                 withContext(Dispatchers.Main) {
                     Log.d("TEST", result)
                     toast("Got the result!")
-                        importBatchConfig(result)
+                    importBatchConfig(result)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -468,31 +524,38 @@ class MainActivity : BaseActivity() {
 //                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP), requestCode)
 //        } catch (e: Exception) {
         RxPermissions(this)
-                .request(Manifest.permission.CAMERA)
-                .subscribe {
-                    if (it)
-                        if (forConfig)
-                            scanQRCodeForConfig.launch(Intent(this, ScannerActivity::class.java))
-                        else
-                            scanQRCodeForUrlToCustomConfig.launch(Intent(this, ScannerActivity::class.java))
+            .request(Manifest.permission.CAMERA)
+            .subscribe {
+                if (it)
+                    if (forConfig)
+                        scanQRCodeForConfig.launch(Intent(this, ScannerActivity::class.java))
                     else
-                        toast(R.string.toast_permission_denied)
-                }
+                        scanQRCodeForUrlToCustomConfig.launch(
+                            Intent(
+                                this,
+                                ScannerActivity::class.java
+                            )
+                        )
+                else
+                    toast(R.string.toast_permission_denied)
+            }
 //        }
         return true
     }
 
-    private val scanQRCodeForConfig = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            importBatchConfig(it.data?.getStringExtra("SCAN_RESULT"))
+    private val scanQRCodeForConfig =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                importBatchConfig(it.data?.getStringExtra("SCAN_RESULT"))
+            }
         }
-    }
 
-    private val scanQRCodeForUrlToCustomConfig = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            importConfigCustomUrl(it.data?.getStringExtra("SCAN_RESULT"))
+    private val scanQRCodeForUrlToCustomConfig =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                importConfigCustomUrl(it.data?.getStringExtra("SCAN_RESULT"))
+            }
         }
-    }
 
     /**
      * import config from clipboard
@@ -510,9 +573,9 @@ class MainActivity : BaseActivity() {
     }
 
     fun importBatchConfig(server: String?, subid: String = "") {
-        val subid2 = if(subid.isNullOrEmpty()){
+        val subid2 = if (subid.isNullOrEmpty()) {
             mainViewModel.subscriptionId
-        }else{
+        } else {
             subid
         }
         val append = subid.isNullOrEmpty()
@@ -612,8 +675,8 @@ class MainActivity : BaseActivity() {
             toast(R.string.title_sub_update)
             MmkvManager.decodeSubscriptions().forEach {
                 if (TextUtils.isEmpty(it.first)
-                        || TextUtils.isEmpty(it.second.remarks)
-                        || TextUtils.isEmpty(it.second.url)
+                    || TextUtils.isEmpty(it.second.remarks)
+                    || TextUtils.isEmpty(it.second.url)
                 ) {
                     return@forEach
                 }
@@ -656,18 +719,24 @@ class MainActivity : BaseActivity() {
         intent.addCategory(Intent.CATEGORY_OPENABLE)
 
         try {
-            chooseFileForCustomConfig.launch(Intent.createChooser(intent, getString(R.string.title_file_chooser)))
+            chooseFileForCustomConfig.launch(
+                Intent.createChooser(
+                    intent,
+                    getString(R.string.title_file_chooser)
+                )
+            )
         } catch (ex: ActivityNotFoundException) {
             toast(R.string.toast_require_file_manager)
         }
     }
 
-    private val chooseFileForCustomConfig = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        val uri = it.data?.data
-        if (it.resultCode == RESULT_OK && uri != null) {
-            readContentFromUri(uri)
+    private val chooseFileForCustomConfig =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val uri = it.data?.data
+            if (it.resultCode == RESULT_OK && uri != null) {
+                readContentFromUri(uri)
+            }
         }
-    }
 
     /**
      * read content from uri
@@ -679,19 +748,19 @@ class MainActivity : BaseActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         }
         RxPermissions(this)
-                .request(permission)
-                .subscribe {
-                    if (it) {
-                        try {
-                            contentResolver.openInputStream(uri).use { input ->
-                                importCustomizeConfig(input?.bufferedReader()?.readText())
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+            .request(permission)
+            .subscribe {
+                if (it) {
+                    try {
+                        contentResolver.openInputStream(uri).use { input ->
+                            importCustomizeConfig(input?.bufferedReader()?.readText())
                         }
-                    } else
-                        toast(R.string.toast_permission_denied)
-                }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                } else
+                    toast(R.string.toast_permission_denied)
+            }
     }
 
     /**
@@ -708,7 +777,11 @@ class MainActivity : BaseActivity() {
             toast(R.string.toast_success)
             //adapter.notifyItemInserted(mainViewModel.serverList.lastIndex)
         } catch (e: Exception) {
-            ToastCompat.makeText(this, "${getString(R.string.toast_malformed_josn)} ${e.cause?.message}", Toast.LENGTH_LONG).show()
+            ToastCompat.makeText(
+                this,
+                "${getString(R.string.toast_malformed_josn)} ${e.cause?.message}",
+                Toast.LENGTH_LONG
+            ).show()
             e.printStackTrace()
             return
         }

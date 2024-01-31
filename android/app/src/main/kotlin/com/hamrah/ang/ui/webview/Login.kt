@@ -13,6 +13,7 @@ import com.hamrah.ang.ui.MainActivity
 import org.json.JSONObject
 
 class WebViewLogin : AppCompatActivity() {
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +33,8 @@ class WebViewLogin : AppCompatActivity() {
             val pass = jsonObject.getString("password")
             toast("name: $name")
 
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
+            intentToMainActivity()
+
         }
 
         val baseUrl = "file:///android_asset/"
@@ -47,5 +46,13 @@ class WebViewLogin : AppCompatActivity() {
         webView.addJavascriptInterface(jsInterface, "AndroidInterface")
 
         // AndroidInterface.sendDataToKotlin("Hello from JavaScript!")
+    }
+
+    private fun intentToMainActivity() {
+        val intent = Intent(this@WebViewLogin, MainActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) //or Intent.FLAG_ACTIVITY_CLEAR_TOP Intent.FLAG_ACTIVITY_CLEAR_TASK or or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 }
